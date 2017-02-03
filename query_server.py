@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import redis
@@ -27,7 +27,7 @@ def get_buckets():
 def get_bucket(name):
     return jsonify({'name': name, 'size': get_bucket_size(name)})
 
-def get_folders_at_level(bucket_name, level): 
+def get_folders_at_level(bucket_name, level):
     key = "{}:levels:{}".format(bucket_name, level)
     return r.zrevrange(key, 0, -1, withscores=True)
 

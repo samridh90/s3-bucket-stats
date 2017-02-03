@@ -18,6 +18,7 @@
   "homepage": "https://github.com/samridh90/s3-bucket-stats#readme",
   "dependencies": {
     "bootstrap": "^3.3.7",
-    "d3": "^4.5.0"
+    "d3": "^4.5.0",
+    "jquery": "^3.1.1"
   }
 }
