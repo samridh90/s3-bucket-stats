@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 from flask import Flask, jsonify, request
 import redis
+import flask
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='./')
 r = redis.StrictRedis()
 
 def get_bucket_size(bucket_name):
@@ -31,5 +32,18 @@ def get_folders(name):
     level = request.args.get('level', 1)
     return jsonify([name_score_pair_to_dict(p) for p in get_folders_at_level(name, level)])
 
+@app.route("/")
+def index():
+    return flask.render_template("index.html")
+
+@app.route("/<path:path>")
+def send_current(path):
+    return flask.send_from_directory("./", path)
+
+
+@app.route("/node_modules/<path:path>")
+def send_modules(path):
+    return flask.send_from_directory("node_modules", path)
+
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0')

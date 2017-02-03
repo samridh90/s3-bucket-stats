@@ -1,0 +1,23 @@
+{
+  "name": "s3-bucket-stats",
+  "version": "1.0.0",
+  "description": "Yes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samridh90/s3-bucket-stats.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/samridh90/s3-bucket-stats/issues"
+  },
+  "homepage": "https://github.com/samridh90/s3-bucket-stats#readme",
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "d3": "^4.5.0"
+  }
+}
