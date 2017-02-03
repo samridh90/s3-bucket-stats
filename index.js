@@ -24,7 +24,7 @@ window.onload = function() {
 
     var color = d3.scaleLinear()
         .domain([-1, 5])
-        .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
+        .range(["hsl(50, 100%, 53%)", "hsl(0, 100%, 56%)"])
         .interpolate(d3.interpolateHcl);
 
     var pack = d3.pack()
@@ -56,7 +56,7 @@ window.onload = function() {
             .style("display", function(d) { return d.parent === root ? "inline" : "none"; })
             .text(function(d) {
                 var parts = d.data.name.split('/');
-                return parts[parts.length - 1] + ' ' + formatSize(d.data.size);
+                return parts[parts.length - 1] + ' ' + formatSize(d.data.size) + ' ' + '~$' + formatPrice(d.data.size) + ' per month.' ;
             });
 
         var node = g.selectAll("circle,text");
@@ -90,6 +90,11 @@ window.onload = function() {
             circle.attr("r", function(d) { return d.r * k; });
         }
     };
+
+    function formatPrice(value) {
+        value = value / 1e9;
+        return Math.round(value * 0.021);
+    }
 
     function formatSize(value) {
         value = +value;
