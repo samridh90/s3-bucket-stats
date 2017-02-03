@@ -25,18 +25,18 @@ profiles = ["staging"]
 for profile in profiles:
     session = boto3.Session(profile_name=profile)
     s3 = session.resource('s3')
-    bucket_name = "rsyslog-archives-stg" #TODO: change this to retrieve all bucket names
-    bucket = s3.Bucket(bucket_name)
-    bucket_tree = get_fancy_dict()
-    for obj in bucket.objects.all():
-        curr_node = bucket_tree
-        folders = obj.key.split('/')[:-1]
-        bucket_tree[SIZE] += obj.size
-        for folder in folders:
-            curr_node = curr_node[folder]
-            curr_node[SIZE] += obj.size
-    r.zadd("buckets", bucket_tree[SIZE], bucket_name)
-    p = r.pipeline()
-    add_folder_sizes(bucket_name, bucket_tree, bucket_name, p, 0)
-    p.execute()
+    for bucket in s3.buckets.all():
+        bucket_name = bucket.name
+        bucket_tree = get_fancy_dict()
+        for obj in bucket.objects.all():
+            curr_node = bucket_tree
+            folders = obj.key.split('/')[:-1]
+            bucket_tree[SIZE] += obj.size
+            for folder in folders:
+                curr_node = curr_node[folder]
+                curr_node[SIZE] += obj.size
+        r.zadd("buckets", bucket_tree[SIZE], bucket_name)
+        p = r.pipeline()
+        add_folder_sizes(bucket_name, bucket_tree, bucket_name, p, 0)
+        p.execute()
 
