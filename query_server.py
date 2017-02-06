@@ -11,8 +11,9 @@ r = redis.StrictRedis()
 def get_bucket_size(bucket_name):
     return int(r.zscore("buckets", bucket_name))
 
-def get_all_buckets():
-    return r.zrevrange("buckets", 0, -1, withscores=True)
+def get_buckets(limit=None):
+    upper_range = limit if limit is not None else -1
+    return r.zrevrange("buckets", 0, upper_range, withscores=True)
 
 def name_score_pair_to_dict(pair):
     return {'name': pair[0].decode('UTF-8'), 'size': int(pair[1])}
@@ -20,7 +21,8 @@ def name_score_pair_to_dict(pair):
 @app.route('/buckets')
 @app.route('/buckets/')
 def get_buckets():
-    return jsonify([name_score_pair_to_dict(p) for p in get_all_buckets()])
+    limit = request.args.get('limit', None)
+    return jsonify([name_score_pair_to_dict(p) for p in get_buckets(limit)])
 
 @app.route('/buckets/<name>')
 @app.route('/buckets/<name>/')

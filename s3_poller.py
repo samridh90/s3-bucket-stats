@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import boto3
 from collections import Counter, defaultdict
+from functools import partial
 from multiprocessing import Pool
 import redis
 
@@ -19,9 +20,9 @@ def add_folder_sizes(name, tree, bucket_name, p, level):
             full_name = "{}/{}".format(name, node_name)
             add_folder_sizes(full_name, tree_node, bucket_name, p, level+1)
 
-def store_bucket_data(bucket_name):
+def store_bucket_data(bucket_name, profile="dev"):
     p = redis.StrictRedis().pipeline()
-    session = boto3.Session(profile_name="staging")
+    session = boto3.Session(profile_name=profile)
     s3 = session.resource('s3')
     bucket = s3.Bucket(bucket_name)
     print(bucket_name, end='', flush=True)
@@ -43,13 +44,14 @@ r = redis.StrictRedis()
 # TODO: Add dev and production when we are ready for them
 def main():
     pool = Pool()
-    profiles = ["staging"]
+    profiles = ["dev", "staging", "production"]
     for profile in profiles:
+        store_bucket_fun = partial(store_bucket_data, profile=profile)
         session = boto3.Session(profile_name=profile)
         s3 = session.resource('s3')
         # becuase iterables
         bucket_names = map(lambda x: x.name, s3.buckets.all())
-        pool.map(store_bucket_data, bucket_names)
+        pool.map(store_bucket_fun, bucket_names)
 '''
         for bucket in s3.buckets.all():
             store_bucket_data(bucket)
