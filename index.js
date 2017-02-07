@@ -3,7 +3,7 @@ window.onload = function() {
     var data = {
         name: 'Buckets'
     };
-    $.get(baseUrl + 'buckets')
+    $.get(baseUrl + 'buckets?limit=5')
         .done(function(buckets) {
             data.children = buckets;
             var folderPromises = buckets.map(function(bucket) {
